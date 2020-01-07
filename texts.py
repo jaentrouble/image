@@ -5,7 +5,7 @@ import worker
 class Texts(pygame.sprite.DirtySprite) :
     def __init__(self, color_status : list, area : pygame.Rect, agent : worker.Worker) :
         super().__init__(self.groups)
-        self.font = pygame.font.SysFont('None', 25)
+        self.font = pygame.font.SysFont('Arial', 25)
         self.color_status = color_status
         self.rect = area
         self.agent = agent
