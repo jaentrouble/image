@@ -1,5 +1,6 @@
 import pygame
 import os
+from constants import *
 
 def l_loader(path : str) :
     """
