@@ -12,6 +12,7 @@ class Worker(pygame.sprite.DirtySprite) :
         self.dots = []
         self.standard = np.array([255,255,255])
         self.ratio_record = []
+        self.img_idx = []
 
     def image_setter(self) :
         self.image = pygame.Surface((self.size,self.size))
@@ -36,14 +37,26 @@ class Worker(pygame.sprite.DirtySprite) :
     def takeout_pin(self) :
         if len(self.dots) != 0 :
             self.ratio_record.pop()
+            self.img_idx.pop()
             dead = self.dots.pop()
             dead.kill()
 
     def get_records(self) :
         return self.ratio_record.copy()
 
+    def flush_records(self) :
+        tmp = self.ratio_record
+        self.ratio_record = []
+        tmpidx = self.img_idx
+        self.img_idx = []
+        for _ in range(len(self.dots)):
+            dead = self.dots.pop()
+            dead.kill()
+        return [tmp, tmpidx]
+
     def record_ratio(self) :
         self.ratio_record.append(self.get_ratio(True))
+        self.img_idx.append(self.target.get_index())
 
     def get_ratio(self, pin : bool = True) :
         c = self.calculate_mean()

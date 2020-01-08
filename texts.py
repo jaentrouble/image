@@ -10,12 +10,15 @@ class Texts(pygame.sprite.DirtySprite) :
         self.rect = area
         self.agent = agent
         self.image = pygame.Surface((self.rect.width, self.rect.height))
-        self.help1 = self.font.render('z: Undo',
+        self.help1 = self.font.render('z: Undo | s: Save | [ : Size down | ] : Size down ',
                                     True, (0,0,0), (255,255,255))
-        self.help2 = self.font.render('1:Red 2:Green',
+        self.help2 = self.font.render('1:Red | 2:Green | 3:Blue | 4:Default',
                                     False, (0,0,0), (255,255,255))
-        self.help3 = self.font.render('3:Blue 4:Default',
+        self.help3 = self.font.render('Left click : Pin | Right click : Set',
                                     False, (0,0,0), (255,255,255))
+        self.sample = pygame.Surface((100,100))
+        self.saved = False
+        self.save_fail = False
         self.update_image()
 
     def update_image(self) :
@@ -46,4 +49,15 @@ class Texts(pygame.sprite.DirtySprite) :
                                         False, (0,0,0), (255,255,255)),(0,580))
         self.image.blit(self.font.render('base blue : {0}'.format(self.agent.get_standard()[2]),
                                         False, (0,0,0), (255,255,255)),(0,610))
+        self.sample.fill(self.agent.get_standard())
+        self.image.blit(self.sample,(self.rect.width - 100,self.rect.height-200))
+        if self.saved :
+            self.image.blit(self.font.render('Saved', False, (0,0,0), (255,255,255)),(self.rect.width - 50, 50))
+        elif self.save_fail :
+            self.image.blit(self.font.render('Save Failed', False, (0,0,0), (255,255,255)),(self.rect.width - 50, 50))
         self.dirty = True
+        self.saved = False
+        self.save_fail = False
+
+    def save_complete(self) :
+        self.saved = True

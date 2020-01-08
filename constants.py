@@ -2,3 +2,5 @@ RED = 0
 GREEN = 1
 BLUE = 2
 DEFAULT = -1
+PATH = 'img'
+TEXT_WIDTH = 400

@@ -6,9 +6,8 @@ import backimg
 import worker
 from constants import *
 import texts
+import exporter
 
-PATH = 'img'
-TEXT_WIDTH = 200
 
 class Main() :
     def __init__(self, fps = 60) :
@@ -28,6 +27,7 @@ class Main() :
         self.background.convert()
         self.clock = pygame.time.Clock()
         self.color = [True, True, True] #r,g,b
+        self.saver = exporter.Saver()
         
     def groupsetter(self) :
         backimg.BackImage.groups = self.allgroup
@@ -79,6 +79,10 @@ class Main() :
                         self.worker.decrease_size()
                     elif event.key == pygame.K_z :
                         self.worker.takeout_pin()
+                    elif event.key == pygame.K_s :
+                        saved = self.saver.save(*self.worker.flush_records())
+                        if saved :
+                            self.text.save_complete()
                     self.text.update_image()
                 elif event.type == pygame.MOUSEBUTTONDOWN :
                     if pygame.mouse.get_pressed()[2] :
