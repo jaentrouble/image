@@ -7,3 +7,4 @@ TEXT_WIDTH = 400
 D_HEIGHT = 800  #Default height
 
 DRAW_COLOR = (0,0,255)
+TRANS_COLOR = (0,0,0)

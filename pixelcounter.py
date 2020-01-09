@@ -31,12 +31,14 @@ class Main() :
         backimg.BackImage.groups = self.allgroup
         worker.Worker.groups = self.allgroup
         worker.Line.groups = self.allgroup
+        worker.Bucket.groups = self.allgroup
 
     def run(self) :
         mainloop = True
         self.screen.blit(self.background, (0,0))
         self.worker = worker.Worker(self.img)
         self.line_mode = False
+        self.bucket_mode = False
 
         while mainloop :
             self.clock.tick(self.fps)
@@ -55,13 +57,25 @@ class Main() :
                     elif event.key == pygame.K_LEFT :
                         self.img.backward()
                     elif event.key == pygame.K_l :
+                        if self.line_mode :
+                            self.worker.end_line()
+                        if self.bucket_mode :
+                            self.bucket_mode = False
                         self.line_mode = not self.line_mode
                     elif event.key == pygame.K_z :
                         self.worker.undo()
+                    elif event.key == pygame.K_b :
+                        if self.line_mode :
+                            self.line_mode = False
+                            self.worker.end_line()
+                        self.bucket_mode = not self.bucket_mode
                 elif event.type == pygame.MOUSEBUTTONDOWN :
                     if pygame.mouse.get_pressed()[0] :
                         if self.line_mode :
                             self.worker.order_line()
+                        if self.bucket_mode :
+                            self.worker.bucket_fill()
+                        print(self.worker.count_color())
             self.allgroup.update()
             self.allgroup.clear(self.screen, self.background)
             self.allgroup.draw(self.screen)
