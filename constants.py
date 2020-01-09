@@ -4,3 +4,6 @@ BLUE = 2
 DEFAULT = -1
 PATH = 'img'
 TEXT_WIDTH = 400
+D_HEIGHT = 800  #Default height
+
+DRAW_COLOR = (0,0,255)

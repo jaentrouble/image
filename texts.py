@@ -10,7 +10,7 @@ class Texts(pygame.sprite.DirtySprite) :
         self.rect = area
         self.agent = agent
         self.image = pygame.Surface((self.rect.width, self.rect.height))
-        self.help1 = self.font.render('z: Undo | s: Save | [ : Size down | ] : Size down ',
+        self.help1 = self.font.render('z: Undo | s: Save | [ : Size down | ] : Size up ',
                                     True, (0,0,0), (255,255,255))
         self.help2 = self.font.render('1:Red | 2:Green | 3:Blue | 4:Default',
                                     False, (0,0,0), (255,255,255))

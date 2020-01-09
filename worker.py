@@ -98,4 +98,4 @@ class Dot(pygame.sprite.DirtySprite) :
         super().__init__(self.groups)
         self.rect = rect.copy()
         self.image = pygame.Surface((self.rect.width, self.rect.height))
-        self.image.fill((0,0,255))
+        self.image.fill(DRAW_COLOR)
