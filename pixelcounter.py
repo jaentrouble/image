@@ -42,6 +42,8 @@ class Main() :
         self.text = pixelc.texts.Texts(self.text_rect, self.worker, self.img)
         self.line_mode = False
         self.bucket_mode = False
+        self.clear_check = False
+        self.unit_mode = False
 
         while mainloop :
             self.clock.tick(self.fps)
@@ -59,57 +61,83 @@ class Main() :
                         self.img.forward()
                     elif event.key == pygame.K_LEFT :
                         self.img.backward()
-                    # Line mode
-                    elif event.key == pygame.K_l :
-                        if self.line_mode :
-                            self.worker.end_line()
-                        if self.bucket_mode :
-                            self.bucket_mode = False
-                        self.line_mode = not self.line_mode
-                        if self.line_mode :
-                            self.text.mode_changed(MODE_LINE)
-                        else :
-                            self.text.mode_changed(MODE_NONE)
+                        
+                    # Unit setting mode
+                    elif event.key == pygame.K_F1 :
+                        self.unit_mode = not self.unit_mode
+                        self.line_mode = False
+                        self.bucket_mode = False
 
-                    # Undo
-                    elif event.key == pygame.K_z :
-                        self.worker.undo()
+                    # Clear all
+                    if not self.unit_mode:
+                        if event.key == pygame.K_c :
+                            if not self.clear_check :
+                                self.clear_check = True
+                                self.text.clear_check()
+                            else :
+                                self.worker.clear_all()
+                                self.clear_check = False
+                                self.text.clear_not()
 
-                    #Bucket mode
-                    elif event.key == pygame.K_b :
-                        if self.line_mode :
-                            self.line_mode = False
-                            self.worker.end_line()
-                        self.bucket_mode = not self.bucket_mode
-                        if self.bucket_mode :
-                            self.text.mode_changed(MODE_BUCKET)
-                        else :
-                            self.text.mode_changed(MODE_NONE)
+                        # Line mode
+                        elif event.key == pygame.K_l :
+                            if self.line_mode :
+                                self.worker.end_line()
+                            if self.bucket_mode :
+                                self.bucket_mode = False
+                            self.line_mode = not self.line_mode
+                            if self.line_mode :
+                                self.text.mode_changed(MODE_LINE)
+                            else :
+                                self.text.mode_changed(MODE_NONE)
 
-                    #Set counting
-                    elif event.key == pygame.K_t :
-                        self.worker.set_image()
+                        # Undo
+                        elif event.key == pygame.K_z :
+                            self.worker.undo()
 
-                    ###color change
-                    elif event.key == pygame.K_1 :
-                        pixelc.worker.DRAW_COLOR = COLOR_LIST[RED]
-                    elif event.key == pygame.K_2 :
-                        pixelc.worker.DRAW_COLOR = COLOR_LIST[GREEN]
-                    elif event.key == pygame.K_3 :
-                        pixelc.worker.DRAW_COLOR = COLOR_LIST[BLUE]
-                    elif event.key == pygame.K_4 :
-                        pixelc.worker.DRAW_COLOR = COLOR_LIST[WHITE]
-                    elif event.key == pygame.K_5 :
-                        pixelc.worker.DRAW_COLOR = COLOR_LIST[BLACK]
-                    self.text.update_image()
+                        #Bucket mode
+                        elif event.key == pygame.K_b :
+                            if self.line_mode :
+                                self.line_mode = False
+                                self.worker.end_line()
+                            self.bucket_mode = not self.bucket_mode
+                            if self.bucket_mode :
+                                self.text.mode_changed(MODE_BUCKET)
+                            else :
+                                self.text.mode_changed(MODE_NONE)
+
+                        #Set counting
+                        elif event.key == pygame.K_t :
+                            self.worker.set_image()
+
+                        ###color change
+                        elif event.key == pygame.K_1 :
+                            pixelc.worker.DRAW_COLOR = COLOR_LIST[RED]
+                        elif event.key == pygame.K_2 :
+                            pixelc.worker.DRAW_COLOR = COLOR_LIST[GREEN]
+                        elif event.key == pygame.K_3 :
+                            pixelc.worker.DRAW_COLOR = COLOR_LIST[BLUE]
+                        elif event.key == pygame.K_4 :
+                            pixelc.worker.DRAW_COLOR = COLOR_LIST[WHITE]
+                        elif event.key == pygame.K_5 :
+                            pixelc.worker.DRAW_COLOR = COLOR_LIST[BLACK]
+                    
+                    if event.key != pygame.K_c :
+                        self.text.clear_not()
+                    if self.unit_mode :
+                        self.text.unit_mode_update()
+                    else :
+                        self.text.update_image()
                 elif event.type == pygame.MOUSEBUTTONDOWN :
                     if pygame.mouse.get_pressed()[0] :
                         if self.line_mode :
                             self.worker.order_line()
                         if self.bucket_mode :
                             self.worker.bucket_fill()
-                        print(self.worker.count_color())
-                        self.text.update_image()
+                        if self.unit_mode :
+                            self.text.unit_mode_update()
+                        else :
+                            self.text.update_image()
             self.allgroup.update()
             self.allgroup.clear(self.screen, self.background)
             self.allgroup.draw(self.screen)

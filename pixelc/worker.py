@@ -2,6 +2,7 @@ import pygame
 import numpy as np
 from constants import *
 import backimg
+from pixelc import pixelcal
 
 class Worker() :
     def __init__(self, target : backimg.BackImage) :
@@ -9,8 +10,37 @@ class Worker() :
         self.line_thickness = 3
         self.masks = []
         self.masks_colored = []
+        self.l_pos_record = []
         self.l_s_pos = None
         self.set_image()
+        self.calculator = pixelcal.PixelCalculator()
+
+    def get_pinned(self) :
+        return self.calculator.get_pinned()
+
+    def set_unit(self) :
+        self.calculator.set_unit()
+
+    def delta_actual(self, delta : int) :
+        self.calculator.delta_actual(delta)
+
+    def calculate_area(self) :
+        return self.calculator.calculate_area(self.count_color())
+
+    def get_ratio(self) :
+        return self.calculator.get_ratio()
+
+    def get_unit_actual(self) :
+        return self.calculator.get_unit_actual()
+
+    def clear_all (self) :
+        for mask in self.masks :
+            mask.kill()
+        self.masks = []
+        self.masks_colored = []
+        self.l_s_pos = None
+        self.l_pos_record = []
+        self.reset_grid()
 
     def count_color (self) :
         return np.count_nonzero(self.grid)
@@ -40,6 +70,8 @@ class Worker() :
             dead.kill()
             self.reset_grid()
             self.update_grid()
+        if len(self.l_pos_record) != 0 :
+            self.l_s_pos = self.l_pos_record.pop()
 
     def order_line (self) :
         if self.l_s_pos == None :
@@ -56,6 +88,7 @@ class Worker() :
         self.masks.append(tmp)
         self.masks_colored.append(tmp.get_color_arr())
         self.update_grid()
+        self.l_pos_record.append(self.l_s_pos)
         self.l_s_pos = self.l_e_pos
 
     def end_line(self) :
