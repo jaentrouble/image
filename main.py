@@ -83,6 +83,8 @@ class Main() :
                         saved = self.saver.save(*self.worker.flush_records())
                         if saved :
                             self.text.save_complete()
+                        else :
+                            self.text.save_failed()
                     self.text.update_image()
                 elif event.type == pygame.MOUSEBUTTONDOWN :
                     if pygame.mouse.get_pressed()[2] :

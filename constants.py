@@ -1,10 +1,23 @@
 RED = 0
 GREEN = 1
 BLUE = 2
+WHITE = 3
+BLACK = 4
 DEFAULT = -1
 PATH = 'img'
 TEXT_WIDTH = 400
 D_HEIGHT = 800  #Default height
 
+COLOR_LIST = [
+    (255,0,0),
+    (0,255,0),
+    (0,0,255),
+    (255,255,255),
+    (0,0,0),
+]
 DRAW_COLOR = (0,0,255)
 TRANS_COLOR = (0,0,0)
+
+MODE_NONE = 0
+MODE_LINE = 1
+MODE_BUCKET = 2

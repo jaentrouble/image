@@ -5,13 +5,13 @@ import worker
 class Texts(pygame.sprite.DirtySprite) :
     def __init__(self, color_status : list, area : pygame.Rect, agent : worker.Worker) :
         super().__init__(self.groups)
-        self.font = pygame.font.SysFont('Arial', 25)
+        self.font = pygame.font.SysFont('Arial', 20)
         self.color_status = color_status
         self.rect = area
         self.agent = agent
         self.image = pygame.Surface((self.rect.width, self.rect.height))
         self.help1 = self.font.render('z: Undo | s: Save | [ : Size down | ] : Size up ',
-                                    True, (0,0,0), (255,255,255))
+                                    False, (0,0,0), (255,255,255))
         self.help2 = self.font.render('1:Red | 2:Green | 3:Blue | 4:Default',
                                     False, (0,0,0), (255,255,255))
         self.help3 = self.font.render('Left click : Pin | Right click : Set',
@@ -61,3 +61,6 @@ class Texts(pygame.sprite.DirtySprite) :
 
     def save_complete(self) :
         self.saved = True
+
+    def save_failed(self) :
+        self.save_fail = True

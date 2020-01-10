@@ -25,9 +25,13 @@ class Worker() :
 
     def set_image (self) :
         self.reference = self.target.get_current_array()
+        self.target_idx = self.target.get_index()
         self.width = self.reference.shape[0]
         self.height = self.reference.shape[1]
         self.reset_grid()
+
+    def get_index(self) :
+        return self.target_idx
 
     def undo (self) :
         if len(self.masks) != 0 :
