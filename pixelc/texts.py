@@ -1,6 +1,6 @@
 import pygame
-import backimg
-from constants import *
+from common import backimg
+from common.constants import *
 import numpy as np
 from pixelc import worker
 

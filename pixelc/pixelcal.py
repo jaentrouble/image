@@ -1,7 +1,7 @@
 import numpy as np
 import pygame
 import math
-from constants import *
+from common.constants import *
 
 class PixelCalculator () :
     def __init__(self) :

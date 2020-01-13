@@ -1,7 +1,7 @@
 import pygame
 import numpy as np
-from constants import *
-import backimg
+from common.constants import *
+from common import backimg
 from pixelc import pixelcal
 
 class Worker() :

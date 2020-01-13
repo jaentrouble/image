@@ -1,6 +1,6 @@
 import pygame
-from constants import *
-import worker
+from common.constants import *
+from ratioc import worker
 
 class Texts(pygame.sprite.DirtySprite) :
     def __init__(self, color_status : list, area : pygame.Rect, agent : worker.Worker) :

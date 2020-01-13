@@ -1,7 +1,7 @@
 import pygame
 import numpy as np
-import backimg
-from constants import *
+from common import backimg
+from common.constants import *
 
 class Worker(pygame.sprite.DirtySprite) :
     def __init__(self, target : backimg.BackImage) :

@@ -1,12 +1,11 @@
 import pygame
 import numpy as np
 import os
-import loader
-import backimg
-import exporter
-from constants import *
+from common import loader
+from common import backimg
+from common import exporter
+from common.constants import *
 import pixelc
-import texts
 
 class Main() :
     def __init__(self, fps = 60) :

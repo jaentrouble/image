@@ -1,7 +1,7 @@
 import pygame
-import loader
+from common import loader
 import numpy as np
-from constants import *
+from common.constants import *
 
 class BackImage (pygame.sprite.DirtySprite):
     def __init__ (self, path : str) :

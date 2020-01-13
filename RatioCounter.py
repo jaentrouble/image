@@ -1,12 +1,12 @@
 import pygame
 import numpy as np
 import os
-import loader
-import backimg
-import worker
-from constants import *
-import texts
-import exporter
+from common import loader
+from common import backimg
+from ratioc import worker
+from common.constants import *
+from ratioc import texts
+from common import exporter
 
 class Main() :
     def __init__(self, fps = 60) :
