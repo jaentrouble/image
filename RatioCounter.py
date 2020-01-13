@@ -80,7 +80,7 @@ class Main() :
                     elif event.key == pygame.K_z :
                         self.worker.takeout_pin()
                     elif event.key == pygame.K_s :
-                        saved = self.saver.save(*self.worker.flush_records())
+                        saved = self.saver.save(self.worker.flush_records())
                         if saved :
                             self.text.save_complete()
                         else :

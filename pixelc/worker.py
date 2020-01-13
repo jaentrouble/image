@@ -33,6 +33,12 @@ class Worker() :
     def get_unit_actual(self) :
         return self.calculator.get_unit_actual()
 
+    def flush_record (self) :
+        tmp = self.calculate_area()
+        tmp_idx = self.get_index()
+        self.clear_all()
+        return [[tmp,tmp_idx]]
+
     def clear_all (self) :
         for mask in self.masks :
             mask.kill()

@@ -45,6 +45,7 @@ class Worker(pygame.sprite.DirtySprite) :
         return self.ratio_record.copy()
 
     def flush_records(self) :
+        total = []
         tmp = self.ratio_record
         self.ratio_record = []
         tmpidx = self.img_idx
@@ -52,7 +53,9 @@ class Worker(pygame.sprite.DirtySprite) :
         for _ in range(len(self.dots)):
             dead = self.dots.pop()
             dead.kill()
-        return [tmp, tmpidx]
+        for i in range(len(tmp)) :
+            total.append([tmp[i],tmpidx[i]])
+        return total
 
     def record_ratio(self) :
         self.ratio_record.append(self.get_ratio(True))

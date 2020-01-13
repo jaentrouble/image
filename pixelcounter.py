@@ -107,7 +107,21 @@ class Main() :
 
                         #Set counting
                         elif event.key == pygame.K_t :
-                            self.worker.set_image()
+                            if not self.clear_check :
+                                self.clear_check = True
+                                self.text.clear_check()
+                            else :
+                                self.worker.clear_all()
+                                self.worker.set_image()
+                                self.clear_check = False
+                                self.text.clear_not()                            
+
+                        #Save
+                        elif event.key == pygame.K_s :
+                            if self.saver.save(self.worker.flush_record()) :
+                                self.text.save_complete()
+                            else :
+                                self.text.save_failed()
 
                         ###color change
                         elif event.key == pygame.K_1 :
@@ -121,7 +135,7 @@ class Main() :
                         elif event.key == pygame.K_5 :
                             pixelc.worker.DRAW_COLOR = COLOR_LIST[BLACK]
                     
-                    if event.key != pygame.K_c :
+                    if event.key != pygame.K_c and event.key != pygame.K_t:
                         self.text.clear_not()
                     if self.unit_mode :
                         self.text.unit_mode_update()
