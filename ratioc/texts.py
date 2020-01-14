@@ -29,6 +29,8 @@ class Texts(pygame.sprite.DirtySprite) :
                                             False, (0,255,0), (255,255,255))
         self.blue_status = self.font.render('Blue : {0}'.format(self.color_status[2]),
                                             False, (0,0,255), (255,255,255))
+        self.index_status = self.font.render('Index {0} (Total {1} images)'.format(self.agent.get_index(), self.agent.get_image_length()),
+                                            False, (0,0,0), (255,255,255))
 
         self.image.blit(self.red_status, (0, 0))
         self.image.blit(self.green_status, (0, 30))
@@ -36,7 +38,8 @@ class Texts(pygame.sprite.DirtySprite) :
         self.image.blit(self.help1, (0,90))
         self.image.blit(self.help2, (0,120))
         self.image.blit(self.help3, (0,150))
-        row = 180
+        self.image.blit(self.index_status, (0,180))
+        row = 210
         for ratio in self.agent.get_records()[-10:] :
             self.image.blit(self.font.render('{0:.2f}'.format(ratio), False,
                                              (0,0,0), (255,255,255)),(0,row))

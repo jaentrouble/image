@@ -14,6 +14,12 @@ class Worker(pygame.sprite.DirtySprite) :
         self.ratio_record = []
         self.img_idx = []
 
+    def get_image_length(self) :
+        return len(self.target)
+
+    def get_index(self) :
+        return self.target.get_index()
+
     def image_setter(self) :
         self.image = pygame.Surface((self.size,self.size))
         self.image.fill((255,0,0))
