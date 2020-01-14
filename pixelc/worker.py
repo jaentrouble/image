@@ -110,8 +110,8 @@ class Line(pygame.sprite.DirtySprite) :
         super().__init__(self.groups)
         self.left = min(startpos[0],endpos[0])
         self.top = min(startpos[1],endpos[1])
-        self.width = abs(startpos[0]-endpos[0])+1
-        self.height = abs(startpos[1]-endpos[1])+1
+        self.width = abs(startpos[0]-endpos[0])+2
+        self.height = abs(startpos[1]-endpos[1])+2
         self.image = pygame.Surface((self.width, self.height))
         self.rect = pygame.Rect(self.left, self.top, self.width, self.height)
         self.image.fill(TRANS_COLOR)
