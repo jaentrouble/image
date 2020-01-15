@@ -177,7 +177,7 @@ class Texts(pygame.sprite.DirtySprite) :
                                         False, word_color, back_color))
         counting_idx = self.agent.get_index()
         current_image_idx = self.back_img.get_index()
-        index_text1 = 'Total index : 0 ~ {}'.format(len(self.back_img))
+        index_text1 = 'Total index : 0 ~ {}'.format(len(self.back_img)-1)
         index_text2 = 'Current image index : {}'.format(current_image_idx)
         index_text3 = 'Counting target index : {}'.format(counting_idx)
         info_surfs.append(self.font.render(index_text1,

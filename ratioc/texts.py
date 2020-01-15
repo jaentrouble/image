@@ -29,7 +29,7 @@ class Texts(pygame.sprite.DirtySprite) :
                                             False, (0,255,0), (255,255,255))
         self.blue_status = self.font.render('Blue : {0}'.format(self.color_status[2]),
                                             False, (0,0,255), (255,255,255))
-        self.index_status = self.font.render('Index {0} (Total {1} images)'.format(self.agent.get_index(), self.agent.get_image_length()),
+        self.index_status = self.font.render('Index {0} (0 ~ {1})'.format(self.agent.get_index(), self.agent.get_image_length()-1),
                                             False, (0,0,0), (255,255,255))
 
         self.image.blit(self.red_status, (0, 0))

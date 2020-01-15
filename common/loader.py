@@ -13,6 +13,12 @@ def l_loader(path : str) :
     for (dirpath, dirnames, filenames) in os.walk(path) :
         f.extend(filenames)
     for filename in f :
-        surfs.append(pygame.image.load(os.path.join(path,filename)))
+        try :
+            surfs.append(pygame.image.load(os.path.join(path,filename)))
+        except pygame.error :
+            if pygame.get_error() == 'Unsupported image format' :
+                print('Unsupported image : {}'.format(filename))
+            else :
+                raise pygame.error(pygame.get_error())
 
     return surfs
