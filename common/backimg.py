@@ -59,6 +59,7 @@ class BackImage (pygame.sprite.DirtySprite):
         self.image = self.imgs[self.img_idx]
         self.dirty = 1
         self.image.convert()
+        self.rect = self.image.get_rect()
         self.array = pygame.surfarray.array3d(self.image)
 
     def get_original_array(self) :
