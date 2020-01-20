@@ -3,6 +3,9 @@ from common import loader
 import numpy as np
 from common.constants import *
 
+def groupsetter(*groups) :
+    BackImage.groups = groups
+
 class BackImage (pygame.sprite.DirtySprite):
     def __init__ (self, path : str) :
         pygame.sprite.DirtySprite.__init__(self, self.groups)
