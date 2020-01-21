@@ -17,7 +17,7 @@ class Worker() :
         self.masks_colored = []
         self.l_pos_record = []
         self.l_s_pos = None #line start position
-        self.set_image()
+        self.set_image()   
         self.markers = marker.Markers()
         self.big_mode = AUTO_BIG_MODE_color
         self.mode = AUTO_MODE_none
