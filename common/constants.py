@@ -47,3 +47,6 @@ AUTO_MODE_wrong = 3
 AUTO_MODE_user = 4
 AUTO_BIG_MODE_color = 0
 AUTO_BIG_MODE_count = 1
+AUTO_PATH = 'model'
+AUTO_vector_size = 3
+AUTO_default_filename = 'model.h5'

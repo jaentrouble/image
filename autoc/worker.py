@@ -9,8 +9,24 @@ def groupsetter(*groups) :
     Line.groups = groups
     Bucket.groups = groups 
 
-class Worker() :
+class Worker(pygame.sprite.DirtySprite) :
+    #cursor image
+    image = pygame.Surface((AUTO_width2, AUTO_width2))
+    image.fill(AUTO_user_color)
+    image.set_colorkey(TRANS_COLOR)
+    temp = pygame.Surface((AUTO_width2-2, AUTO_width2-2))
+    temp.fill(TRANS_COLOR)
+    image.blit(temp,(1,1))
+
+    cursor = pygame.Surface((3,3))
+    cursor.fill(AUTO_user_color)
+
     def __init__(self, target : backimg.BackImage) :
+        super().__init__(self.groups)
+        self.image = Worker.cursor
+        self.image.convert()
+        self.rect = Worker.image.get_rect()
+        self.rect.centerx, self.rect.centery = pygame.mouse.get_pos()
         self.target = target
         self.line_thickness = 3
         self.masks = []
@@ -19,14 +35,28 @@ class Worker() :
         self.l_s_pos = None #line start position
         self.set_image()   
         self.markers = marker.Markers()
-        self.big_mode = AUTO_BIG_MODE_color
+        self.big_mode = AUTO_BIG_MODE_color #alphago mode vs human mode
         self.mode = AUTO_MODE_none
+        self.dirty = False
+
+    def flush_record(self) :
+        tmp = self.markers.count
+        self.markers.reset()
+        return [[tmp, self.target_idx]]
+
+    def get_big_mode(self) :
+        return self.big_mode
+
+    def get_mode(self) :
+        return self.mode
 
     def big_mode_change(self) :
         if self.big_mode == AUTO_BIG_MODE_color :
             self.big_mode = AUTO_BIG_MODE_count
         else :
             self.big_mode = AUTO_BIG_MODE_color
+        self.mode = AUTO_MODE_none
+        self.cursor_off()
 
     def mode_wrong(self) :
         if self.big_mode == AUTO_BIG_MODE_count:
@@ -34,10 +64,53 @@ class Worker() :
                 self.mode = AUTO_MODE_none
             else :
                 self.mode = AUTO_MODE_wrong
+            self.cursor_off()
+
+    def mode_user(self) :
+        if self.big_mode == AUTO_BIG_MODE_count :
+            if self.mode == AUTO_MODE_user :
+                self.mode = AUTO_MODE_none
+            else :
+                self.mode = AUTO_MODE_user
+                self.cursor_on()
+                
+    def mode_line(self) :
+        if self.big_mode == AUTO_BIG_MODE_color :
+            if self.mode == AUTO_MODE_line :
+                self.mode = AUTO_MODE_none
+            else :
+                self.mode = AUTO_MODE_line
+            self.cursor_off()
+
+    def mode_bucket(self) :
+        if self.big_mode == AUTO_BIG_MODE_color :
+            if self.mode == AUTO_MODE_bucket :
+                self.mode = AUTO_MODE_none
+            else :
+                self.mode = AUTO_MODE_bucket
+            self.cursor_off()
+
+    def calculate(self) :
+        if self.big_mode == AUTO_BIG_MODE_count:
+            self.markers.calculate(self.grid, self.reference)
+
+    def cursor_on (self) :
+        self.image = Worker.image
+        self.rect = self.image.get_rect()
+
+    def cursor_off(self) :
+        self.image = Worker.cursor
+        self.rect = self.image.get_rect()
 
     def mouse_clicked(self) :
         if self.mode == AUTO_MODE_wrong :
             self.markers.wrong_choice()
+        elif self.mode == AUTO_MODE_user :
+            self.markers.user_choice()
+        elif self.mode == AUTO_MODE_line :
+            self.order_line()
+        elif self.mode == AUTO_MODE_bucket :
+            self.bucket_fill()
 
     def set_image (self) :
         self.reference = self.target.get_current_array()
@@ -67,14 +140,19 @@ class Worker() :
         return self.target_idx
 
     def undo (self) :
-        if len(self.masks) != 0 :
-            self.masks_colored.pop()
-            dead = self.masks.pop()
-            dead.kill()
-            self.reset_grid()
-            self.update_grid()
-        if len(self.l_pos_record) != 0 :
-            self.l_s_pos = self.l_pos_record.pop()
+        if self.big_mode == AUTO_BIG_MODE_color :
+            if len(self.masks) != 0 :
+                self.masks_colored.pop()
+                dead = self.masks.pop()
+                dead.kill()
+                self.reset_grid()
+                self.update_grid()
+            if len(self.l_pos_record) != 0 :
+                self.l_s_pos = self.l_pos_record.pop()
+        elif self.mode == AUTO_MODE_wrong :
+            self.markers.undo_wrong()
+        elif self.mode == AUTO_MODE_user :
+            self.markers.undo_user()
 
     def order_line (self) :
         if self.l_s_pos == None :
@@ -102,7 +180,9 @@ class Worker() :
         self.masks_colored.append(tmp.get_color_arr())
         self.masks.append(tmp)
 
-
+    def update(self) :
+        self.rect.centerx, self.rect.centery = pygame.mouse.get_pos()
+        self.dirty = True
 
 class Line(pygame.sprite.DirtySprite) :
     def __init__(self, startpos, endpos, thick) :
