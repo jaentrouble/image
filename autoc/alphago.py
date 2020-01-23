@@ -56,7 +56,7 @@ class Alphago() :
                         count += 1
         self.current_total_avg = math.sqrt(bright/count)
 
-    def vector_convert(self, pos) :
+    def vector_convert_2(self, pos) :
         """
         return np.array([width1/width2, width2/width3, width3/total])
         """
@@ -90,6 +90,27 @@ class Alphago() :
             avg[0]/self.current_total_avg,
         ])
         
+    def vector_convert(self, pos) :
+        """
+        divide width2 square into 9 squares
+        """
+        delta = AUTO_width2//3
+        bright_list = []
+        for i in range(-1,2):
+            for j in range(-1,2) :
+                b = 0
+                count = 0
+                for x in range(max(0, pos[0] + i*delta), min(self.m_x, pos[0] + (i+1)*delta)):
+                    for y in range(max(0, pos[1] + j*delta), min(self.m_y, pos[1] + (j+1)*delta)):
+                        b += self.current_array[x][y]
+                        count += 1
+                bright_list.append(b/count)
+        bright_list = np.array(bright_list)
+        m = np.max(bright_list)/self.current_total_avg
+        bright_list = bright_list/np.min(bright_list) -1
+        bright_list = np.append(bright_list, m)
+        return bright_list
+        
     def predict(self, grid : np.array, array : np.array) :
         """
         returns 'Center point', not the left-top point
@@ -117,7 +138,7 @@ class Alphago() :
         self.set_grid_array(grid, array)
         correct_choice = list(correct_choice)
         wrong_choice = list(wrong_choice)
-        if len(correct_choice) > 2*len(wrong_choice) :
+        if len(correct_choice) > len(wrong_choice) :
             for _ in range(len(correct_choice)-len(wrong_choice)) :
                 x = random.randrange(0, self.m_x)
                 y = random.randrange(0, self.m_y)
@@ -125,14 +146,17 @@ class Alphago() :
                     x = random.randrange(0, self.m_x)
                     y = random.randrange(0, self.m_y)
                 wrong_choice.append([x,y])
+        elif len(correct_choice) < len(wrong_choice) :
+            wrong_choice = random.sample(wrong_choice, len(correct_choice))
         user_y = np.ones(len(correct_choice))
         wrong_y = np.zeros(len(wrong_choice))
         total_x = np.concatenate((correct_choice,wrong_choice))
         vectorized_x = []
         for tx in total_x :
-            vectorized_x.append(self.vector_convert(tx))
+            vectorized_x.append(self.vector_convert([max(0, tx[0]-(AUTO_width1//2)), max(0, tx[1]-(AUTO_width1//2))]))
         vectorized_x = np.array(vectorized_x)
         total_y = np.concatenate((user_y, wrong_y))
         self.saver.save(np.hstack((vectorized_x, total_y.reshape((-1,1)))))
         self.model.fit(x = vectorized_x, y = total_y, epochs = AUTO_alphago_epoch)
         self.model.save(self.model_path)
+        print('model saved')

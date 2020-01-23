@@ -17,6 +17,18 @@ class Markers() :
         self.user_markers = []
         self.alphago = alphago.Alphago(AUTO_default_filename)
 
+    def hide_alphago_marks(self) :
+        for mark in self.alphago_markers :
+            mark.hide()
+        for mark in self.wrong_markers :
+            mark.hide()
+
+    def show_alphago_marks(self) :
+        for mark in self.alphago_markers :
+            mark.show()
+        for mark in self.wrong_markers :
+            mark.show()
+
     def undo_wrong(self) :
         if len(self.wrong_choices) != 0 :
             dead = self.wrong_markers.pop()
@@ -83,12 +95,28 @@ class Alphago_mark(pygame.sprite.DirtySprite) :
     temp = pygame.Surface((AUTO_width2-2, AUTO_width2-2))
     temp.fill(TRANS_COLOR)
     image.blit(temp,(1,1))
+    trans = pygame.Surface((2,2))
+    trans.fill(TRANS_COLOR)
+    trans.set_colorkey(TRANS_COLOR)
+
     def __init__(self, pos : list) :
         super().__init__(self.groups)
         self.image = Alphago_mark.image
         self.image.convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.centerx, self.rect.centery = pos[0], pos[1]
+        self.image_saved = self.image
+        self.rect_saved = self.rect
+
+    def hide(self) :
+        self.image = Alphago_mark.trans
+        self.image.convert_alpha()
+        self.dirty = True
+
+    def show(self) :
+        self.image = self.image_saved
+        self.rect = self.rect_saved
+        self.dirty = True
 
     def mouse_collide(self) :
         return self.rect.collidepoint(pygame.mouse.get_pos())
@@ -100,14 +128,30 @@ class Wrong_mark(pygame.sprite.DirtySprite) :
     image = pygame.Surface((AUTO_width2, AUTO_width2))
     image.fill(TRANS_COLOR)
     image.set_colorkey(TRANS_COLOR)
-    pygame.draw.line(image, AUTO_wrong_color, [0,0], [AUTO_width2,AUTO_width2], 2)
-    pygame.draw.line(image, AUTO_wrong_color, [0,AUTO_width2], [AUTO_width2,0], 2)
+    pygame.draw.line(image, AUTO_wrong_color, [0,0], [AUTO_width2,AUTO_width2], 1)
+    pygame.draw.line(image, AUTO_wrong_color, [0,AUTO_width2], [AUTO_width2,0], 1)
+    trans = pygame.Surface((2,2))
+    trans.fill(TRANS_COLOR)
+    trans.set_colorkey(TRANS_COLOR)
+
     def __init__(self, pos: list) :
         super().__init__(self.groups)
         self.image = Wrong_mark.image
         self.image.convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.centerx, self.rect.centery = pos[0], pos[1]
+        self.image_saved = self.image
+        self.rect_saved = self.rect
+
+    def hide(self) :
+        self.image = Alphago_mark.trans
+        self.image.convert_alpha()
+        self.dirty = True
+
+    def show(self) :
+        self.image = self.image_saved
+        self.rect = self.rect_saved
+        self.dirty = True
 
 class User_mark(pygame.sprite.DirtySprite) :
     image = pygame.Surface((AUTO_width2, AUTO_width2))

@@ -141,6 +141,7 @@ class Worker(pygame.sprite.DirtySprite) :
 
     def set_image (self) :
         self.reference = self.target.get_current_array()
+        self.reference = self.reference.astype(float)
         self.target_idx = self.target.get_index()
         self.width = self.reference.shape[0]
         self.height = self.reference.shape[1]
@@ -161,6 +162,12 @@ class Worker(pygame.sprite.DirtySprite) :
     def show_masks(self) :
         for mask in self.masks :
             mask.show()
+
+    def hide_alphago_marks(self) :
+        self.markers.hide_alphago_marks()
+        
+    def show_alphago_marks(self) :
+        self.markers.show_alphago_marks()
 
     def reset_masks (self) :
         for mask in self.masks :

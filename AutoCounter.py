@@ -89,6 +89,12 @@ class Main() :
                     elif event.key == pygame.K_g :
                         self.worker.show_masks()
 
+                    # hide alphago_marks
+                    elif event.key == pygame.K_k :
+                        self.worker.hide_alphago_marks()
+                    elif event.key == pygame.K_j :
+                        self.worker.show_alphago_marks()
+
                     # change convert mode
                     elif event.key >= pygame.K_1 and event.key <= pygame.K_9 :
                         self.worker.mode_convert(event.key - pygame.K_1)
