@@ -83,6 +83,12 @@ class Main() :
                         self.worker.mode_bucket()
                         self.texts.mode_changed()
 
+                    # hide masks
+                    elif event.key == pygame.K_h :
+                        self.worker.hide_masks()
+                    elif event.key == pygame.K_g :
+                        self.worker.show_masks()
+
                     # change convert mode
                     elif event.key >= pygame.K_1 and event.key <= pygame.K_9 :
                         self.worker.mode_convert(event.key - pygame.K_1)

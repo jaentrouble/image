@@ -1,6 +1,8 @@
 import tensorflow as tf
 import numpy as np
 from common.constants import *
+from common import exporter
+import math
 import os
 import random
 
@@ -10,7 +12,9 @@ class Alphago() :
     Arrays should be 'brigtness' single value ; 2D array not 3D
     """
     def __init__(self, filename : str) :
-        self.model = tf.keras.models.load_model(os.path.join(AUTO_PATH, filename))
+        self.model_path = os.path.join(AUTO_PATH, filename)
+        self.model = tf.keras.models.load_model(self.model_path)
+        self.saver = exporter.Saver(AUTO_database_filename)
 
     def check_masked (self, pos : list,) :
         """
@@ -43,13 +47,14 @@ class Alphago() :
                 for y in range(len(self.current_grid[0])) :
                     bright += self.current_array[x][y]
                     count += 1
+            print('empty mask ; using total brightness instead')
         else :
             for x in range(len(self.current_grid)) :
                 for y in range(len(self.current_grid[0])) :
                     if self.current_grid[x][y] :
-                        bright += self.current_array[x][y]
+                        bright += self.current_array[x][y]**2
                         count += 1
-        self.current_total_avg = bright/count
+        self.current_total_avg = math.sqrt(bright/count)
 
     def vector_convert(self, pos) :
         """
@@ -64,21 +69,25 @@ class Alphago() :
         
         for x in range(max(0, pos[0]-delta_3short), min(pos[0] + delta_3long, self.m_x)) :
             for y in range(max(0, pos[1]-delta_3short), min(pos[1] + delta_3long, self.m_y)) :
-                width_bright[2] += self.current_array[x][y]
+                width_bright[2] += self.current_array[x][y]**2
                 width_count[2] += 1
         for x in range(max(0, pos[0]-delta_2short), min(pos[0] + delta_2long, self.m_x)) :
             for y in range(max(0, pos[1]-delta_2short), min(pos[1] + delta_2long, self.m_y)) :
-                width_bright[1] += self.current_array[x][y]
+                width_bright[1] += self.current_array[x][y]**2
+                width_bright[2] -= self.current_array[x][y]**2
                 width_count[1] += 1
+                width_count[2] -= 1
         for x in range(pos[0],min(self.m_x, pos[0] + AUTO_width1)) :
             for y in range(pos[1], min(self.m_y, pos[1] + AUTO_width1)):
-                width_bright[0] += self.current_array[x][y]
+                width_bright[0] += self.current_array[x][y]**2
+                width_bright[1] -= self.current_array[x][y]**2
                 width_count[0] += 1
-        avg = width_bright/width_count
+                width_count[1] -= 1
+        avg = np.sqrt(width_bright/width_count)
         return np.array([
             avg[0]/avg[1],
-            avg[1]/avg[2],
-            avg[2]/self.current_total_avg,
+            avg[0]/avg[2],
+            avg[0]/self.current_total_avg,
         ])
         
     def predict(self, grid : np.array, array : np.array) :
@@ -124,4 +133,6 @@ class Alphago() :
             vectorized_x.append(self.vector_convert(tx))
         vectorized_x = np.array(vectorized_x)
         total_y = np.concatenate((user_y, wrong_y))
-        self.model.fit(x = vectorized_x, y = total_y)
+        self.saver.save(np.hstack((vectorized_x, total_y.reshape((-1,1)))))
+        self.model.fit(x = vectorized_x, y = total_y, epochs = AUTO_alphago_epoch)
+        self.model.save(self.model_path)

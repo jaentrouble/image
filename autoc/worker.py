@@ -64,7 +64,7 @@ class Worker(pygame.sprite.DirtySprite) :
         tmp = self.markers.count()
         converted = self.convert_funcs[self.convert_mode](self.reference)
         self.markers.fit(self.grid, converted)
-        self.markers.reset()
+        self.reset_all()
         return [[tmp, self.target_idx]]
 
     def get_big_mode(self) :
@@ -117,7 +117,7 @@ class Worker(pygame.sprite.DirtySprite) :
         if self.big_mode == AUTO_BIG_MODE_count:
             converted = self.convert_funcs[self.convert_mode](self.reference)
             self.markers.calculate(self.grid, converted)
-            self.reset_masks()
+            self.hide_masks()
 
     def cursor_on (self) :
         self.image = Worker.image
@@ -153,6 +153,14 @@ class Worker(pygame.sprite.DirtySprite) :
         for mask in self.masks_colored :
             for pos in mask :
                 self.grid[pos[0]][pos[1]] = True
+
+    def hide_masks(self) :
+        for mask in self.masks :
+            mask.hide()
+
+    def show_masks(self) :
+        for mask in self.masks :
+            mask.show()
 
     def reset_masks (self) :
         for mask in self.masks :
@@ -212,6 +220,9 @@ class Worker(pygame.sprite.DirtySprite) :
         self.dirty = True
 
 class Line(pygame.sprite.DirtySprite) :
+    trans = pygame.Surface((2,2))
+    trans.fill(TRANS_COLOR)
+    trans.set_colorkey(TRANS_COLOR)
     def __init__(self, startpos, endpos, thick) :
         super().__init__(self.groups)
         self.left = min(startpos[0],endpos[0])
@@ -220,6 +231,8 @@ class Line(pygame.sprite.DirtySprite) :
         self.height = abs(startpos[1]-endpos[1])+2
         self.image = pygame.Surface((self.width, self.height))
         self.rect = pygame.Rect(self.left, self.top, self.width, self.height)
+        self.image_saved = self.image
+        self.rect_saved = self.rect
         self.image.fill(TRANS_COLOR)
         self.image.set_colorkey(TRANS_COLOR)
         if (startpos[0]-endpos[0])*(startpos[1]-endpos[1]) >= 0 :
@@ -228,6 +241,16 @@ class Line(pygame.sprite.DirtySprite) :
         else :
             pygame.draw.line(self.image, DRAW_COLOR, [0, self.height],[self.width, 0], thick)
         self.image.convert_alpha()
+
+    def hide(self) :
+        self.image = Line.trans
+        self.image.convert_alpha()
+        self.dirty = True
+
+    def show(self) :
+        self.image = self.image_saved
+        self.rect = self.rect_saved
+        self.dirty = True
 
     def get_color_arr(self) :
         """
@@ -246,6 +269,10 @@ class Line(pygame.sprite.DirtySprite) :
         return filled
 
 class Bucket(pygame.sprite.DirtySprite) :
+    trans = pygame.Surface((2,2))
+    trans.fill(TRANS_COLOR)
+    trans.set_colorkey(TRANS_COLOR)
+
     def __init__(self, grid : np.array) :
         super().__init__(self.groups)
         self.grid = grid
@@ -257,6 +284,18 @@ class Bucket(pygame.sprite.DirtySprite) :
         self.col_list = []
         self.filler(pygame.mouse.get_pos())
         self.update_image()
+        self.image_saved = self.image
+        self.rect_saved = self.rect
+
+    def hide(self) :
+        self.image = Bucket.trans
+        self.image.convert_alpha()
+        self.dirty = True
+
+    def show(self) :
+        self.image = self.image_saved
+        self.rect = self.rect_saved
+        self.dirty = True
 
     def update_image(self):
         self.image = pygame.surfarray.make_surface(self.img_array)
