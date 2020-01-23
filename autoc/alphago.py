@@ -7,6 +7,7 @@ import random
 class Alphago() :
     """
     All the standard points are left-top corner
+    Arrays should be 'brigtness' single value ; 2D array not 3D
     """
     def __init__(self, filename : str) :
         self.model = tf.keras.models.load_model(os.path.join(AUTO_PATH, filename))
@@ -37,11 +38,17 @@ class Alphago() :
     def set_total_avg(self) :
         bright = 0
         count = 0
-        for x in len(self.current_grid) :
-            for y in len(self.current_grid) :
-                if self.current_grid[x][y] :
+        if np.count_nonzero(self.current_grid) == 0 :
+            for x in range(len(self.current_grid)) :
+                for y in range(len(self.current_grid[0])) :
                     bright += self.current_array[x][y]
                     count += 1
+        else :
+            for x in range(len(self.current_grid)) :
+                for y in range(len(self.current_grid[0])) :
+                    if self.current_grid[x][y] :
+                        bright += self.current_array[x][y]
+                        count += 1
         self.current_total_avg = bright/count
 
     def vector_convert(self, pos) :
@@ -80,13 +87,17 @@ class Alphago() :
         """
         self.set_grid_array(grid, array)
         guess = []
+        candidates = []
         for i in range(len(grid)//AUTO_width1) :
             x = i*AUTO_width1
             for j in range(len(grid[i])//AUTO_width1):
                 y = j*AUTO_width1
-                if self.check_masked([x,y]) and self.model.predict(self.vector_convert([x,y])):
-                    guess.append([min(x+(AUTO_width1//2), self.m_x),min(y+(AUTO_width1//2), self.m_y)])
-
+                if self.check_masked([x,y]):
+                    candidates.append([x,y])
+        for c in candidates :
+            prob = self.model.predict(np.array([self.vector_convert(c)]))[0]
+            if np.argmax(prob) == 1 :
+                guess.append([min(c[0]+(AUTO_width1//2), self.m_x),min(c[1]+(AUTO_width1//2), self.m_y)])
         return guess
 
     def fit(self, correct_choice, wrong_choice, grid, array) :
@@ -108,5 +119,9 @@ class Alphago() :
         user_y = np.ones(len(correct_choice))
         wrong_y = np.zeros(len(wrong_choice))
         total_x = np.concatenate((correct_choice,wrong_choice))
+        vectorized_x = []
+        for tx in total_x :
+            vectorized_x.append(self.vector_convert(tx))
+        vectorized_x = np.array(vectorized_x)
         total_y = np.concatenate((user_y, wrong_y))
-        self.model.fit(x = total_x, y = total_y)
+        self.model.fit(x = vectorized_x, y = total_y)

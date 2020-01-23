@@ -59,12 +59,12 @@ class Markers() :
     def count(self) :
         return len(self.alphago_choices)-len(self.wrong_choices)+len(self.user_choices)
 
-    def fit(self) :
+    def fit(self, grid, array) :
         correct = self.user_choices.copy()
         for ac in self.alphago_choices :
             if not ac in self.wrong_choices :
                 correct.append(ac)
-        self.alphago.fit(correct, self.wrong_choices.copy(), self.grid, self.array)
+        self.alphago.fit(correct, self.wrong_choices.copy(), grid, array)
 
     def calculate(self, grid, array) :
         """
@@ -73,8 +73,6 @@ class Markers() :
         """
         self.reset()
         self.alphago_choices = self.alphago.predict(grid, array)
-        self.grid = grid
-        self.array = array
         for ac in self.alphago_choices :
             self.alphago_markers.append(Alphago_mark(ac))
     

@@ -40,7 +40,7 @@ class Main() :
         self.screen.blit(self.background, (0,0))
         self.mode = MODE_NONE
         self.worker = worker.Worker(self.img)
-        self.texts = texts.Texts(self.text_rect, self.worker)
+        self.texts = texts.Texts(self.text_rect, self.worker, self.img)
         self.texts.update_text()
 
         while mainloop :
@@ -60,6 +60,8 @@ class Main() :
                         self.img.forward()
                     elif event.key == pygame.K_LEFT :
                         self.img.backward()
+
+                    # set image
                     elif event.key == pygame.K_t :
                         self.worker.set_image()
 
@@ -81,6 +83,11 @@ class Main() :
                         self.worker.mode_bucket()
                         self.texts.mode_changed()
 
+                    # change convert mode
+                    elif event.key >= pygame.K_1 and event.key <= pygame.K_9 :
+                        self.worker.mode_convert(event.key - pygame.K_1)
+                        self.texts.mode_changed()
+
                     # calculate
                     elif event.key == pygame.K_c :
                         self.worker.calculate()
@@ -88,6 +95,10 @@ class Main() :
                     # save
                     elif event.key == pygame.K_s:
                         self.worker.flush_record()
+
+                    # reset
+                    elif event.key == pygame.K_r :
+                        self.worker.reset_all()
 
                     # undo
                     elif event.key == pygame.K_z :

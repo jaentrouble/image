@@ -3,6 +3,7 @@ import pygame
 from common.constants import *
 from common import backimg
 from autoc import marker
+from autoc import tools
 
 def groupsetter(*groups) :
     Worker.groups = groups
@@ -38,9 +39,31 @@ class Worker(pygame.sprite.DirtySprite) :
         self.big_mode = AUTO_BIG_MODE_color #alphago mode vs human mode
         self.mode = AUTO_MODE_none
         self.dirty = False
+        self.convert_funcs = [
+            tools.convert_red,
+            tools.convert_green,
+            tools.convert_blue,
+            tools.convert_weighted,
+            tools.convert_min,
+            tools.convert_min_yellow,
+        ]
+        self.convert_mode = AUTO_convert_weighted
+
+    def mode_convert(self, func : int) :
+        if func < len(self.convert_funcs):
+            self.convert_mode = func
+
+    def get_convert_mode(self) :
+        return self.convert_mode
+
+    def reset_all(self) :
+        self.markers.reset()
+        self.reset_masks()
 
     def flush_record(self) :
-        tmp = self.markers.count
+        tmp = self.markers.count()
+        converted = self.convert_funcs[self.convert_mode](self.reference)
+        self.markers.fit(self.grid, converted)
         self.markers.reset()
         return [[tmp, self.target_idx]]
 
@@ -92,14 +115,18 @@ class Worker(pygame.sprite.DirtySprite) :
 
     def calculate(self) :
         if self.big_mode == AUTO_BIG_MODE_count:
-            self.markers.calculate(self.grid, self.reference)
+            converted = self.convert_funcs[self.convert_mode](self.reference)
+            self.markers.calculate(self.grid, converted)
+            self.reset_masks()
 
     def cursor_on (self) :
         self.image = Worker.image
+        self.image.convert_alpha()
         self.rect = self.image.get_rect()
 
     def cursor_off(self) :
         self.image = Worker.cursor
+        self.image.convert()
         self.rect = self.image.get_rect()
 
     def mouse_clicked(self) :
@@ -117,7 +144,7 @@ class Worker(pygame.sprite.DirtySprite) :
         self.target_idx = self.target.get_index()
         self.width = self.reference.shape[0]
         self.height = self.reference.shape[1]
-        self.reset_grid()
+        self.reset_masks()
         
     def reset_grid(self) :
         self.grid = np.zeros((self.width, self.height))
@@ -127,7 +154,7 @@ class Worker(pygame.sprite.DirtySprite) :
             for pos in mask :
                 self.grid[pos[0]][pos[1]] = True
 
-    def clear_all (self) :
+    def reset_masks (self) :
         for mask in self.masks :
             mask.kill()
         self.masks = []
