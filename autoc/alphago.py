@@ -104,7 +104,10 @@ class Alphago() :
                     for y in range(max(0, pos[1] + j*delta), min(self.m_y, pos[1] + (j+1)*delta)):
                         b += self.current_array[x][y]
                         count += 1
-                bright_list.append(b/count)
+                if count == 0 :
+                    bright_list.append(0)
+                else :
+                    bright_list.append(b/count)
         bright_list = np.array(bright_list)
         m = np.max(bright_list)/self.current_total_avg
         bright_list = bright_list/np.min(bright_list) -1

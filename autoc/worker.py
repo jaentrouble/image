@@ -48,6 +48,7 @@ class Worker(pygame.sprite.DirtySprite) :
             tools.convert_min_yellow,
         ]
         self.convert_mode = AUTO_convert_weighted
+        self.backimg_rect = self.target.get_rect()
 
     def mode_convert(self, func : int) :
         if func < len(self.convert_funcs):
@@ -130,14 +131,15 @@ class Worker(pygame.sprite.DirtySprite) :
         self.rect = self.image.get_rect()
 
     def mouse_clicked(self) :
-        if self.mode == AUTO_MODE_wrong :
-            self.markers.wrong_choice()
-        elif self.mode == AUTO_MODE_user :
-            self.markers.user_choice()
-        elif self.mode == AUTO_MODE_line :
-            self.order_line()
-        elif self.mode == AUTO_MODE_bucket :
-            self.bucket_fill()
+        if self.backimg_rect.collidepoint(pygame.mouse.get_pos()):
+            if self.mode == AUTO_MODE_wrong :
+                self.markers.wrong_choice()
+            elif self.mode == AUTO_MODE_user :
+                self.markers.user_choice()
+            elif self.mode == AUTO_MODE_line :
+                self.order_line()
+            elif self.mode == AUTO_MODE_bucket :
+                self.bucket_fill()
 
     def set_image (self) :
         self.reference = self.target.get_current_array()

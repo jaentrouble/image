@@ -21,6 +21,9 @@ class BackImage (pygame.sprite.DirtySprite):
     def __len__(self) :
         return len(self.imgs)
 
+    def get_rect(self) :
+        return self.rect.copy()
+
     def get_index(self) :
         return self.img_idx
 

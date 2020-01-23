@@ -10,12 +10,11 @@ row = 1
 x = []
 y = []
 while ws.cell(row, 1).value != None :
-    x.append([
-        ws.cell(row,1).value,
-        ws.cell(row,2).value,
-        ws.cell(row,3).value,
-    ])
-    y.append(ws.cell(row,4).value)
+    v = []
+    for i in range(AUTO_vector_size) :
+        v.append(ws.cell(row, i+1).value)
+    x.append(v)
+    y.append(ws.cell(row,AUTO_vector_size+1).value)
     row += 1
 
 model = tf.keras.models.load_model(os.path.join(AUTO_PATH, AUTO_default_filename))
