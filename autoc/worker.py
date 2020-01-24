@@ -96,7 +96,7 @@ class Worker(pygame.sprite.DirtySprite) :
                 self.mode = AUTO_MODE_none
             else :
                 self.mode = AUTO_MODE_user
-                self.cursor_on()
+                # self.cursor_on()
                 
     def mode_line(self) :
         if self.big_mode == AUTO_BIG_MODE_color :

@@ -121,15 +121,19 @@ class Alphago() :
         self.set_grid_array(grid, array)
         guess = []
         candidates = []
-        for i in range(len(grid)//AUTO_width1) :
-            x = i*AUTO_width1
-            for j in range(len(grid[i])//AUTO_width1):
-                y = j*AUTO_width1
+        for i in range(len(grid)//AUTO_width2) :
+            x = i*AUTO_width2
+            for j in range(len(grid[i])//AUTO_width2):
+                y = j*AUTO_width2
                 if self.check_masked([x,y]):
                     candidates.append([x,y])
+        vectors = []
         for c in candidates :
-            prob = self.model.predict(np.array([self.vector_convert(c)]))[0]
-            if np.argmax(prob) == 1 :
+            vectors.append(self.vector_convert(c))
+        probs = self.model.predict(np.array(vectors))
+        for n in range(len(probs)) :
+            if np.argmax(probs[n]):
+                c = candidates[n]
                 guess.append([min(c[0]+(AUTO_width1//2), self.m_x),min(c[1]+(AUTO_width1//2), self.m_y)])
         return guess
 
@@ -141,14 +145,16 @@ class Alphago() :
         self.set_grid_array(grid, array)
         correct_choice = list(correct_choice)
         wrong_choice = list(wrong_choice)
+        candidates = []
+        for i in range(len(grid)//AUTO_width2) :
+            x = i*AUTO_width2
+            for j in range(len(grid[i])//AUTO_width2):
+                y = j*AUTO_width2
+                if self.check_masked([x,y]):
+                    candidates.append([x,y])
         if len(correct_choice) > len(wrong_choice) :
-            for _ in range(len(correct_choice)-len(wrong_choice)) :
-                x = random.randrange(0, self.m_x)
-                y = random.randrange(0, self.m_y)
-                while [x,y] in correct_choice :
-                    x = random.randrange(0, self.m_x)
-                    y = random.randrange(0, self.m_y)
-                wrong_choice.append([x,y])
+            wrong_candidates = [wc for wc in candidates if not (wc in correct_choice)]
+            wrong_choice.extend(random.sample(wrong_candidates, len(correct_choice) - len(wrong_choice)))
         elif len(correct_choice) < len(wrong_choice) :
             wrong_choice = random.sample(wrong_choice, len(correct_choice))
         user_y = np.ones(len(correct_choice))

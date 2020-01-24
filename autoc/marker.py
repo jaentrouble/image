@@ -20,14 +20,14 @@ class Markers() :
     def hide_alphago_marks(self) :
         for mark in self.alphago_markers :
             mark.hide()
-        for mark in self.wrong_markers :
-            mark.hide()
+        # for mark in self.wrong_markers :
+        #     mark.hide()
 
     def show_alphago_marks(self) :
         for mark in self.alphago_markers :
             mark.show()
-        for mark in self.wrong_markers :
-            mark.show()
+        # for mark in self.wrong_markers :
+        #     mark.show()
 
     def undo_wrong(self) :
         if len(self.wrong_choices) != 0 :
@@ -51,6 +51,10 @@ class Markers() :
 
     def user_choice(self) :
         uc = pygame.mouse.get_pos()
+        uc = [
+            int(((uc[0]+(AUTO_width2-AUTO_width1)/2)//AUTO_width2)*AUTO_width2 + AUTO_width1//2), 
+            int(((uc[1]+(AUTO_width2-AUTO_width1)/2)//AUTO_width2)*AUTO_width2 + AUTO_width1//2),
+        ]
         self.user_choices.append(uc)
         self.user_markers.append(User_mark(uc))
 
@@ -125,11 +129,11 @@ class Alphago_mark(pygame.sprite.DirtySprite) :
         return [self.rect.centerx, self.rect.centery]
         
 class Wrong_mark(pygame.sprite.DirtySprite) :
-    image = pygame.Surface((AUTO_width2, AUTO_width2))
+    image = pygame.Surface((AUTO_width1, AUTO_width1))
     image.fill(TRANS_COLOR)
     image.set_colorkey(TRANS_COLOR)
-    pygame.draw.line(image, AUTO_wrong_color, [0,0], [AUTO_width2,AUTO_width2], 1)
-    pygame.draw.line(image, AUTO_wrong_color, [0,AUTO_width2], [AUTO_width2,0], 1)
+    pygame.draw.line(image, AUTO_wrong_color, [0,0], [AUTO_width1,AUTO_width1], 1)
+    pygame.draw.line(image, AUTO_wrong_color, [0,AUTO_width1], [AUTO_width1,0], 1)
     trans = pygame.Surface((2,2))
     trans.fill(TRANS_COLOR)
     trans.set_colorkey(TRANS_COLOR)

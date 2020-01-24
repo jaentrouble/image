@@ -58,4 +58,4 @@ AUTO_convert_weighted = 3
 AUTO_convert_min = 4
 AUTO_convert_min_yellow = 5
 AUTO_alphago_epoch = 3
-AUTO_teacher_epoch = 10
+AUTO_teacher_epoch = 3
