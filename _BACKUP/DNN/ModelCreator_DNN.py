@@ -15,4 +15,4 @@ model.compile(
     metrics = ['accuracy']
 )
 model.summary()
-model.save(os.path.join(AUTO_PATH, AUTO_default_filename))
+model.save(os.path.join(AUTO_PATH, AUTO_DNN_filename))

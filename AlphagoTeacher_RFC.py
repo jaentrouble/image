@@ -1,6 +1,6 @@
 import openpyxl as xl
-import tensorflow as tf
-import numpy as np
+import joblib
+from sklearn.ensemble import RandomForestClassifier
 from common.constants import *
 import os
 
@@ -17,6 +17,7 @@ while ws.cell(row, 1).value != None :
     y.append(ws.cell(row,AUTO_vector_size+1).value)
     row += 1
 
-model = tf.keras.models.load_model(os.path.join(AUTO_PATH, AUTO_default_filename))
-model.fit(x = x, y = y, epochs = AUTO_teacher_epoch)
-model.save(os.path.join(AUTO_PATH, AUTO_default_filename))
+clf = RandomForestClassifier()
+clf = clf.fit(x,y)
+joblib.dump(clf, os.path.join(AUTO_PATH, AUTO_RFC_filename))
+print('model saved')

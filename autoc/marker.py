@@ -1,6 +1,6 @@
 import pygame
 from common.constants import *
-from autoc import alphago
+from autoc import alphago_RFC
 
 def groupsetter(*groups) :
     Alphago_mark.groups = groups
@@ -15,7 +15,7 @@ class Markers() :
         self.wrong_markers = []
         self.user_choices = []
         self.user_markers = []
-        self.alphago = alphago.Alphago(AUTO_default_filename)
+        self.alphago = alphago_RFC.Alphago(AUTO_RFC_filename)
 
     def hide_alphago_marks(self) :
         for mark in self.alphago_markers :
