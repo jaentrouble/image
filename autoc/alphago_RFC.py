@@ -157,7 +157,7 @@ class Alphago() :
                     candidates.append([x,y])
         if len(correct_choice) > len(wrong_choice) :
             wrong_candidates = [wc for wc in candidates if not (wc in correct_choice)]
-            wrong_choice.extend(random.sample(wrong_candidates, len(correct_choice) - len(wrong_choice)))
+            wrong_choice.extend(random.sample(wrong_candidates, min(len(correct_choice) - len(wrong_choice),len(wrong_candidates))))
         elif len(correct_choice) < len(wrong_choice) :
             wrong_choice = random.sample(wrong_choice, len(correct_choice))
         user_y = np.ones(len(correct_choice))
