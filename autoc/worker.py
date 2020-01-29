@@ -4,6 +4,7 @@ from common.constants import *
 from common import backimg
 from autoc import marker
 from autoc import tools
+import pixelc
 
 def groupsetter(*groups) :
     Worker.groups = groups
@@ -49,6 +50,16 @@ class Worker(pygame.sprite.DirtySprite) :
         ]
         self.convert_mode = AUTO_convert_weighted
         self.backimg_rect = self.target.get_rect()
+        self.calculator = pixelc.pixelcal.PixelCalculator()
+
+    def get_cellcount(self) :
+        return self.markers.count()
+
+    def get_ratio(self) :
+        return self.calculator.get_ratio()
+
+    def get_pinned(self) :
+        return self.calculator.get_pinned()
 
     def mode_convert(self, func : int) :
         if func < len(self.convert_funcs):
@@ -62,11 +73,12 @@ class Worker(pygame.sprite.DirtySprite) :
         self.reset_masks()
 
     def flush_record(self) :
-        tmp = self.markers.count()
+        cnt = self.markers.count()
+        area = self.calculate_area()
         converted = self.convert_funcs[self.convert_mode](self.reference)
         self.markers.fit(self.grid, converted)
         self.reset_all()
-        return [[tmp, self.target_idx]]
+        return [[cnt, area , self.target_idx]]
 
     def get_big_mode(self) :
         return self.big_mode
@@ -74,11 +86,8 @@ class Worker(pygame.sprite.DirtySprite) :
     def get_mode(self) :
         return self.mode
 
-    def big_mode_change(self) :
-        if self.big_mode == AUTO_BIG_MODE_color :
-            self.big_mode = AUTO_BIG_MODE_count
-        else :
-            self.big_mode = AUTO_BIG_MODE_color
+    def big_mode_change(self, big_mode : int) :
+        self.big_mode = big_mode
         self.mode = AUTO_MODE_none
         self.cursor_off()
 
@@ -114,11 +123,17 @@ class Worker(pygame.sprite.DirtySprite) :
                 self.mode = AUTO_MODE_bucket
             self.cursor_off()
 
-    def calculate(self) :
+    def calculate_alphago(self) :
+        """
+        Orders alphago to count cells
+        """
         if self.big_mode == AUTO_BIG_MODE_count:
             converted = self.convert_funcs[self.convert_mode](self.reference)
             self.markers.calculate(self.grid, converted)
             self.hide_masks()
+
+    def calculate_area(self) :
+        return self.calculator.calculate_area(np.count_nonzero(self.grid))
 
     def cursor_on (self) :
         self.image = Worker.image
@@ -140,6 +155,8 @@ class Worker(pygame.sprite.DirtySprite) :
                 self.order_line()
             elif self.mode == AUTO_MODE_bucket :
                 self.bucket_fill()
+            elif self.big_mode == AUTO_BIG_MODE_unit :
+                self.calculator.set_unit()
 
     def set_image (self) :
         self.reference = self.target.get_current_array()

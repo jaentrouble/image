@@ -47,6 +47,7 @@ AUTO_MODE_wrong = 3
 AUTO_MODE_user = 4
 AUTO_BIG_MODE_color = 0
 AUTO_BIG_MODE_count = 1
+AUTO_BIG_MODE_unit = 2
 AUTO_PATH = 'model'
 AUTO_vector_size = 10
 AUTO_DNN_filename = 'dnn.h5'

@@ -67,21 +67,21 @@ class Main() :
 
                     # change big mode
                     elif event.key == pygame.K_F1 :
-                        self.worker.big_mode_change()
-                        self.texts.mode_changed()
+                        self.worker.big_mode_change(AUTO_BIG_MODE_color)
+                    elif event.key == pygame.K_F2 :
+                        self.worker.big_mode_change(AUTO_BIG_MODE_count)
+                    elif event.key == pygame.K_F3 :
+                        self.worker.big_mode_change(AUTO_BIG_MODE_unit)
+
                     # change mode
                     elif event.key == pygame.K_f :
                         self.worker.mode_wrong()
-                        self.texts.mode_changed()
                     elif event.key == pygame.K_a :
                         self.worker.mode_user()
-                        self.texts.mode_changed()
                     elif event.key == pygame.K_l :
                         self.worker.mode_line()
-                        self.texts.mode_changed()
                     elif event.key == pygame.K_b :
                         self.worker.mode_bucket()
-                        self.texts.mode_changed()
 
                     # hide masks
                     elif event.key == pygame.K_h :
@@ -98,15 +98,17 @@ class Main() :
                     # change convert mode
                     elif event.key >= pygame.K_1 and event.key <= pygame.K_9 :
                         self.worker.mode_convert(event.key - pygame.K_1)
-                        self.texts.mode_changed()
 
                     # calculate
                     elif event.key == pygame.K_c :
-                        self.worker.calculate()
+                        self.worker.calculate_alphago()
                     
                     # save
                     elif event.key == pygame.K_s:
-                        self.worker.flush_record()
+                        if self.saver.save(self.worker.flush_record()) :
+                            self.texts.save_complete()
+                        else :
+                            self.texts.save_failed()
 
                     # reset
                     elif event.key == pygame.K_r :
@@ -117,14 +119,14 @@ class Main() :
                         self.worker.undo()
                     
                     #update text
-                    self.texts.update_text()
+                    self.texts.update()
 
                 elif event.type == pygame.MOUSEBUTTONDOWN :
                     if pygame.mouse.get_pressed()[0] :
                         self.worker.mouse_clicked()
 
                     #update text
-                    self.texts.update_text()
+                    self.texts.update()
         
             self.allgroup.update()
             self.allgroup.clear(self.screen, self.background)
