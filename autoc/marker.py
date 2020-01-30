@@ -129,11 +129,11 @@ class Alphago_mark(pygame.sprite.DirtySprite) :
         return [self.rect.centerx, self.rect.centery]
         
 class Wrong_mark(pygame.sprite.DirtySprite) :
-    image = pygame.Surface((AUTO_width1, AUTO_width1))
+    image = pygame.Surface((AUTO_width2, AUTO_width2))
     image.fill(TRANS_COLOR)
     image.set_colorkey(TRANS_COLOR)
-    pygame.draw.line(image, AUTO_wrong_color, [0,0], [AUTO_width1,AUTO_width1], 1)
-    pygame.draw.line(image, AUTO_wrong_color, [0,AUTO_width1], [AUTO_width1,0], 1)
+    pygame.draw.line(image, AUTO_wrong_color, [0,0], [AUTO_width2,AUTO_width2], 2)
+    pygame.draw.line(image, AUTO_wrong_color, [0,AUTO_width2], [AUTO_width2,0], 2)
     trans = pygame.Surface((2,2))
     trans.fill(TRANS_COLOR)
     trans.set_colorkey(TRANS_COLOR)
