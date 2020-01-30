@@ -50,6 +50,7 @@ class Worker(pygame.sprite.DirtySprite) :
         ]
         self.convert_mode = AUTO_convert_weighted
         self.backimg_rect = self.target.get_rect()
+        self.img_names = self.target.get_names()
         self.calculator = pixelc.pixelcal.PixelCalculator()
 
     def get_cellcount(self) :
@@ -78,7 +79,7 @@ class Worker(pygame.sprite.DirtySprite) :
         converted = self.convert_funcs[self.convert_mode](self.reference)
         self.markers.fit(self.grid, converted)
         self.reset_all()
-        return [[cnt, area , self.target_idx]]
+        return [[cnt, area , self.target_idx, self.img_names[self.target_idx]]]
 
     def get_big_mode(self) :
         return self.big_mode
@@ -164,6 +165,7 @@ class Worker(pygame.sprite.DirtySprite) :
         self.target_idx = self.target.get_index()
         self.width = self.reference.shape[0]
         self.height = self.reference.shape[1]
+        self.backimg_rect = self.target.get_rect()
         self.reset_masks()
         
     def reset_grid(self) :

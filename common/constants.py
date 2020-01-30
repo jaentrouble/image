@@ -34,9 +34,9 @@ MODE_COUNT = 4
 UNIT_PIXEL_DEFAULT = 100
 UNIT_DEFAULT = 50
 
-AUTO_width1 = 4
-AUTO_width2 = 12
-AUTO_width3 = 24
+AUTO_width1 = 5
+AUTO_width2 = 15
+AUTO_width3 = 30
 AUTO_alphago_color = COLOR_LIST[YELLOW]
 AUTO_wrong_color = COLOR_LIST[RED]
 AUTO_user_color = COLOR_LIST[MAGENTA]

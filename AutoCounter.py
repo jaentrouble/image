@@ -119,14 +119,14 @@ class Main() :
                         self.worker.undo()
                     
                     #update text
-                    self.texts.update()
+                    self.texts.update_text()
 
                 elif event.type == pygame.MOUSEBUTTONDOWN :
                     if pygame.mouse.get_pressed()[0] :
                         self.worker.mouse_clicked()
 
                     #update text
-                    self.texts.update()
+                    self.texts.update_text()
         
             self.allgroup.update()
             self.allgroup.clear(self.screen, self.background)

@@ -13,6 +13,7 @@ class Texts(pygame.sprite.DirtySprite) :
         self.rect = area
         self.agent = agent
         self.back_img = img
+        self.img_names = self.back_img.get_names()
         self.image = pygame.Surface((self.rect.width, self.rect.height))
         self.saved = False
         self.save_fail = False
@@ -48,14 +49,10 @@ class Texts(pygame.sprite.DirtySprite) :
             self.font.render('Click at the End Point', False, COLOR_LIST[BLACK], COLOR_LIST[WHITE]),
         ]
 
-
-    def update(self) :
+    def update_text(self) :
         self.big_mode = self.agent.get_big_mode()
         self.mode = self.agent.get_mode()
         self.convert = self.agent.get_convert_mode()
-        self.update_text()
-
-    def update_text(self) :
         self.image.fill(COLOR_LIST[WHITE])
         surfs = []
         surfs.append(self.big_mode_fonts[self.big_mode])
@@ -71,12 +68,15 @@ class Texts(pygame.sprite.DirtySprite) :
         current_image_idx = self.back_img.get_index()
         index_text1 = 'Total index : 0 ~ {}'.format(len(self.back_img)-1)
         index_text2 = 'Current image index : {}'.format(current_image_idx)
-        index_text3 = 'Counting target index : {}'.format(counting_idx)
+        index_text3 = 'Current image name : {}'.format(self.img_names[current_image_idx])
+        index_text4 = 'Counting target index : {}'.format(counting_idx)
         surfs.append(self.font.render(index_text1,
                                     False, COLOR_LIST[BLACK], COLOR_LIST[WHITE]))
         surfs.append(self.font.render(index_text2,
                                     False, COLOR_LIST[BLACK], COLOR_LIST[WHITE]))
         surfs.append(self.font.render(index_text3,
+                                    False, COLOR_LIST[BLACK], COLOR_LIST[WHITE]))
+        surfs.append(self.font.render(index_text4,
                                     False, COLOR_LIST[BLACK], COLOR_LIST[WHITE]))
         if counting_idx != current_image_idx :
             warning_text = 'Warning: Different index'
@@ -141,6 +141,8 @@ class Texts(pygame.sprite.DirtySprite) :
             self.image.blit(s, (0, y))
             y += 40
         self.dirty = True
+        self.saved = False
+        self.save_fail = False
         
     def save_complete(self) :
         self.saved = True

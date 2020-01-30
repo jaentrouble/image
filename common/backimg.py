@@ -9,7 +9,7 @@ def groupsetter(*groups) :
 class BackImage (pygame.sprite.DirtySprite):
     def __init__ (self, path : str) :
         pygame.sprite.DirtySprite.__init__(self, self.groups)
-        self.imgs = loader.l_loader(path)
+        self.imgs, self.img_names = loader.l_loader(path)
         self.img_idx = 0
         self.img_max = len(self.imgs) - 1
         self.image = self.imgs[self.img_idx]
@@ -26,6 +26,9 @@ class BackImage (pygame.sprite.DirtySprite):
 
     def get_index(self) :
         return self.img_idx
+
+    def get_names(self) :
+        return self.img_names.copy()
 
     def get_max_size(self) :
         width = 0

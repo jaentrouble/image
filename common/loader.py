@@ -10,6 +10,7 @@ def l_loader(path : str) :
     """
     surfs = []
     f = []
+    imgnames = []
     for (dirpath, dirnames, filenames) in os.walk(path) :
         f.extend(filenames)
     for filename in f :
@@ -20,5 +21,7 @@ def l_loader(path : str) :
                 print('Unsupported image : {}'.format(filename))
             else :
                 raise pygame.error(pygame.get_error())
+        else :
+            imgnames.append(filename)
 
-    return surfs
+    return surfs, imgnames

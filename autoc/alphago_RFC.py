@@ -58,39 +58,39 @@ class Alphago() :
                         count += 1
         self.current_total_avg = math.sqrt(bright/count)
 
-    def vector_convert_2(self, pos) :
-        """
-        return np.array([width1/width2, width2/width3, width3/total])
-        """
-        width_bright = np.array([0, 0, 0])
-        width_count = np.array([0, 0, 0])
-        delta_2short = (AUTO_width2-AUTO_width1)//2
-        delta_2long = AUTO_width2 - delta_2short
-        delta_3short = (AUTO_width3-AUTO_width1)//2
-        delta_3long = AUTO_width3 - delta_3short
+    # def vector_convert_2(self, pos) :
+    #     """
+    #     return np.array([width1/width2, width2/width3, width3/total])
+    #     """
+    #     width_bright = np.array([0, 0, 0])
+    #     width_count = np.array([0, 0, 0])
+    #     delta_2short = (AUTO_width2-AUTO_width1)//2
+    #     delta_2long = AUTO_width2 - delta_2short
+    #     delta_3short = (AUTO_width3-AUTO_width1)//2
+    #     delta_3long = AUTO_width3 - delta_3short
         
-        for x in range(max(0, pos[0]-delta_3short), min(pos[0] + delta_3long, self.m_x)) :
-            for y in range(max(0, pos[1]-delta_3short), min(pos[1] + delta_3long, self.m_y)) :
-                width_bright[2] += self.current_array[x][y]**2
-                width_count[2] += 1
-        for x in range(max(0, pos[0]-delta_2short), min(pos[0] + delta_2long, self.m_x)) :
-            for y in range(max(0, pos[1]-delta_2short), min(pos[1] + delta_2long, self.m_y)) :
-                width_bright[1] += self.current_array[x][y]**2
-                width_bright[2] -= self.current_array[x][y]**2
-                width_count[1] += 1
-                width_count[2] -= 1
-        for x in range(pos[0],min(self.m_x, pos[0] + AUTO_width1)) :
-            for y in range(pos[1], min(self.m_y, pos[1] + AUTO_width1)):
-                width_bright[0] += self.current_array[x][y]**2
-                width_bright[1] -= self.current_array[x][y]**2
-                width_count[0] += 1
-                width_count[1] -= 1
-        avg = np.sqrt(width_bright/width_count)
-        return np.array([
-            avg[0]/avg[1],
-            avg[0]/avg[2],
-            avg[0]/self.current_total_avg,
-        ])
+    #     for x in range(max(0, pos[0]-delta_3short), min(pos[0] + delta_3long, self.m_x)) :
+    #         for y in range(max(0, pos[1]-delta_3short), min(pos[1] + delta_3long, self.m_y)) :
+    #             width_bright[2] += self.current_array[x][y]**2
+    #             width_count[2] += 1
+    #     for x in range(max(0, pos[0]-delta_2short), min(pos[0] + delta_2long, self.m_x)) :
+    #         for y in range(max(0, pos[1]-delta_2short), min(pos[1] + delta_2long, self.m_y)) :
+    #             width_bright[1] += self.current_array[x][y]**2
+    #             width_bright[2] -= self.current_array[x][y]**2
+    #             width_count[1] += 1
+    #             width_count[2] -= 1
+    #     for x in range(pos[0],min(self.m_x, pos[0] + AUTO_width1)) :
+    #         for y in range(pos[1], min(self.m_y, pos[1] + AUTO_width1)):
+    #             width_bright[0] += self.current_array[x][y]**2
+    #             width_bright[1] -= self.current_array[x][y]**2
+    #             width_count[0] += 1
+    #             width_count[1] -= 1
+    #     avg = np.sqrt(width_bright/width_count)
+    #     return np.array([
+    #         avg[0]/avg[1],
+    #         avg[0]/avg[2],
+    #         avg[0]/self.current_total_avg,
+    #     ])
         
     def vector_convert(self, pos) :
         """
@@ -109,6 +109,8 @@ class Alphago() :
                 if count == 0 :
                     bright_list.append(0)
                 else :
+                    if b == 0 : #prevent 0 divde
+                        b = 1
                     bright_list.append(b/count)
         bright_list = np.array(bright_list)
         m = np.max(bright_list)/self.current_total_avg
